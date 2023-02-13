@@ -19,13 +19,14 @@ class Sheets:
             f"{'0' + str(time_now.day) if len(str(time_now.date())) == 1 else time_now.day}.{'0' + str(time_now.month) if len(str(time_now.month)) == 1 else time_now.month}"
         )
         for user in self.users_info.users:
-            average_time = int(sum(user.messages_difference) / len(user.messages_difference))
-            if user_cell := wkh.find(user.full_name):
-                wkh.update(f"R{user_cell.row}C{wkh.col_count}", average_time)
-            else:
-                wkh.add_rows(rows=1)
-                wkh.update(f"R{wkh.row_count}C1", user.full_name)
-                wkh.update(f"R{wkh.row_count}C{wkh.col_count}", average_time)
+            if user.messages_difference:
+                average_time = int(sum(user.messages_difference) / len(user.messages_difference))
+                if user_cell := wkh.find(user.full_name):
+                    wkh.update(f"R{user_cell.row}C{wkh.col_count}", average_time)
+                else:
+                    wkh.add_rows(rows=1)
+                    wkh.update(f"R{wkh.row_count}C1", user.full_name)
+                    wkh.update(f"R{wkh.row_count}C{wkh.col_count}", average_time)
         self.users_info.users = []
 
     def start(self):

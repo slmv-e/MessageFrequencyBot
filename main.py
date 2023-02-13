@@ -16,6 +16,9 @@ token = env.str("TOKEN")
 bot = Bot(token=token)
 api = API(token=token)
 users_info = UsersInfo(users=[])
+not_allowed_words: list[str] = [
+    "приступил", "закончил", "начал", "окончил", "завершил"
+]
 
 
 class AdminRule(ABCRule[Message]):
@@ -65,8 +68,8 @@ async def message_story(message: Message):
     else:
         user: User = list(filter(lambda usr: usr.id == user_id, users_info.users))[0]
         if (message_difference := datetime.now().timestamp() - user.last_time) < 30 * 60 and all(
-            not_allowed_words not in message.text.lower()
-            for not_allowed_words in ["приступил", "закончил", "начал", "окончил", "завершил"]
+            word not in message.text.lower() and word + "а" not in message.text.lower()
+            for word in not_allowed_words
         ):
             user.messages_difference.append(int(message_difference))
         user.last_time = int(datetime.now().timestamp())

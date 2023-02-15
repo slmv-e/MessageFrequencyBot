@@ -34,7 +34,7 @@ class ChatRule(ABCRule[Message]):
         self.rule = rule
 
     async def check(self, event: Message) -> bool:
-        return True if not self.rule else True if event.peer_id in read_from_json().chat_ids else False
+        return True if not self.rule else True if event.chat_id in read_from_json().chat_ids else False
 
 
 bot.labeler.custom_rules["admin_rule"] = AdminRule
@@ -43,7 +43,7 @@ bot.labeler.custom_rules["chat_rule"] = ChatRule
 
 @bot.on.message(command=("add_this_chat", 0), admin_rule=True)
 async def add_this_chat(message: Message):
-    chat_id = message.peer_id
+    chat_id = message.chat_id
     chat_list = read_from_json().chat_ids
     if chat_id not in chat_list:
         chat_list.append(chat_id)

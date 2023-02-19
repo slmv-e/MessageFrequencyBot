@@ -17,14 +17,18 @@ class Sheets:
             f"{'0' + str(time_now.day) if len(str(time_now.date())) == 1 else time_now.day}.{'0' + str(time_now.month) if len(str(time_now.month)) == 1 else time_now.month}"
         )
         for user in self.users_info.users:
-            if user.messages_difference:
-                average_time = int(sum(user.messages_difference) / len(user.messages_difference))
-                if user_cell := self.wkh.find(user.full_name):
-                    self.wkh.update(f"R{user_cell.row}C{self.wkh.col_count}", average_time)
-                else:
-                    self.wkh.update(f"R{self.wkh.row_count}C1", user.full_name)
-                    self.wkh.update(f"R{self.wkh.row_count}C{self.wkh.col_count}", average_time)
-                    self.wkh.add_rows(rows=1)
+            try:
+                if user.messages_difference:
+                    average_time = int(sum(user.messages_difference) / len(user.messages_difference))
+                    if user_cell := self.wkh.find(user.full_name):
+                        self.wkh.update(f"R{user_cell.row}C{self.wkh.col_count}", average_time)
+                    else:
+                        self.wkh.update(f"R{self.wkh.row_count}C1", user.full_name)
+                        self.wkh.update(f"R{self.wkh.row_count}C{self.wkh.col_count}", average_time)
+                        self.wkh.add_rows(rows=1)
+                time.sleep(20)
+            except Exception as ex:
+                print(ex)
         self.wkh.add_cols(cols=1)
         self.users_info.users = []
 
